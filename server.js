@@ -10,6 +10,7 @@ import { fileURLToPath } from "url";
 import childrenRoutes from "./routes/children.js";
 import historyRoutes from "./routes/history.js"; // /api/reports/daily yoki /api/history/...
 import jetonRoutes from "./routes/jeton.js";
+import systemRoutes from "./routes/system.js";
 import cookieParser from "cookie-parser";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -73,7 +74,8 @@ console.log("📝 Registering routes...");
 app.use("/api/children", childrenRoutes);
 app.use("/api", historyRoutes);
 app.use("/api/jetons", jetonRoutes);
-console.log("✅ Routes registered: /api/children, /api/history, /api/jetons");
+app.use("/api/system", systemRoutes);
+console.log("✅ Routes registered: /api/children, /api/history, /api/jetons, /api/system");
 
 /* ========= API 404 handler ========= */
 app.use("/api", (_req, res) => {
