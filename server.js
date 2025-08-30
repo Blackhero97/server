@@ -1,4 +1,4 @@
-// server.js
+// server.js - Kids CRM Backend API
 import "dotenv/config.js";
 import express from "express";
 import mongoose from "mongoose";
