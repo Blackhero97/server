@@ -12,6 +12,10 @@ const historySchema = new mongoose.Schema(
     entry_time: { type: Date, required: true },
     exit_time: { type: Date },
     paid_amount: { type: Number, default: 0 },
+    
+    // 🆕 Jeton ma'lumotlari
+    jeton_name: { type: String, trim: true },
+    jeton_tariff: { type: String, enum: ["standard", "vip"] },
   },
   { timestamps: true }
 );

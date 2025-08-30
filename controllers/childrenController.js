@@ -1,6 +1,7 @@
 // controllers/childrenController.js
 import Child from "../models/Child.js";
 import History from "../models/History.js";
+import Jeton from "../models/Jeton.js";
 import { v4 as uuidv4 } from "uuid";
 import { printReceiptOS } from "../services/osPrinter.js"; // ⬅️ OS spool orqali chop etish
 
@@ -205,6 +206,19 @@ export const scanByToken = async (req, res) => {
   try {
     const { token } = req.params;
 
+    // Jeton ma'lumotlarini olish
+    const jeton = await Jeton.findOne({ 
+      $or: [{ code: token }, { code: token.toUpperCase() }],
+      isActive: true 
+    });
+
+    if (!jeton) {
+      return res.status(404).json({ 
+        error: "Jeton topilmadi yoki nofaol",
+        token 
+      });
+    }
+
     // 1) Aktiv sessiya bormi?
     const active = await Child.findOne({
       token_code: token,
@@ -226,7 +240,16 @@ export const scanByToken = async (req, res) => {
       const tokenAtCheckout = active.token_code;
       active.token_code = null;
 
+      // Jeton ma'lumotlarini qo'shish
+      active.jeton_name = jeton.name;
+      active.jeton_tariff = jeton.tariff;
+
       await active.save();
+
+      // Jeton statistikasini yangilash
+      jeton.usageCount += 1;
+      jeton.lastUsed = new Date();
+      await jeton.save();
 
       // HISTORY
       await History.findOneAndUpdate(
@@ -236,6 +259,8 @@ export const scanByToken = async (req, res) => {
             exit_time: result.exit_time,
             paid_amount: result.paid_amount,
             token_code: tokenAtCheckout || undefined,
+            jeton_name: jeton.name,
+            jeton_tariff: jeton.tariff,
           },
           $setOnInsert: { entry_time: active.entry_time },
         },
@@ -259,10 +284,23 @@ export const scanByToken = async (req, res) => {
       });
     }
 
-    // 2) KIRISH (default 1 soat)
+    // 2) KIRISH - jeton tarifi bo'yicha
     const entry_time = new Date();
-    const paid_until = new Date(entry_time.getTime() + 60 * 60 * 1000);
-    const base_amount = roundAmount(BASE_COST);
+    
+    // Jeton tarifi bo'yicha vaqt va narxni belgilash
+    let paid_until, base_amount;
+    
+    if (jeton.tariff === 'vip') {
+      // VIP jeton: cheksiz vaqt
+      paid_until = new Date(entry_time.getTime() + 24 * 60 * 60 * 1000); // 24 soat
+      base_amount = roundAmount(jeton.price || 50000);
+    } else {
+      // Standard jeton: 1 soat
+      const duration = jeton.duration || 60; // daqiqa
+      paid_until = new Date(entry_time.getTime() + duration * 60 * 1000);
+      base_amount = roundAmount(jeton.price || 30000);
+    }
+
     const paid_amount = base_amount;
 
     const anon = new Child({
@@ -273,9 +311,18 @@ export const scanByToken = async (req, res) => {
       paid_amount,
       base_amount,
       exit_time: null,
+      // Jeton ma'lumotlarini qo'shish
+      jeton_name: jeton.name,
+      jeton_tariff: jeton.tariff,
+      jeton_price: jeton.price,
     });
 
     await anon.save();
+
+    // Jeton statistikasini yangilash
+    jeton.usageCount += 1;
+    jeton.lastUsed = new Date();
+    await jeton.save();
 
     // HISTORY: boshlanish
     await History.create({
