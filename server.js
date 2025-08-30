@@ -37,26 +37,60 @@ const allowedOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(",").map((s) => s.trim())
   : true; // dev uchun true -> barcha originlarga ruxsat
 
+console.log("🌐 CORS allowed origins:", allowedOrigins);
+
 const corsOptions = {
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    // Agar origin yo'q bo'lsa (masalan, Postman) yoki allowed origins ro'yxatida bo'lsa
+    if (!origin || allowedOrigins === true || allowedOrigins.includes(origin)) {
+      console.log("✅ CORS allowed for origin:", origin || "no-origin");
+      callback(null, true);
+    } else {
+      console.log("❌ CORS blocked for origin:", origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  // Header nomlari registrdan qat'i nazar tekshiriladi, lekin ishonch uchun ikkisini ham qo'shamiz
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: [
     "Content-Type",
     "Authorization",
     "Cache-Control",
-    "cache-control",
+    "cache-control", 
     "Pragma",
     "Expires",
     "X-Requested-With",
     "Accept",
+    "Origin",
+    "User-Agent",
+    "Referer"
   ],
+  optionsSuccessStatus: 200 // IE11 uchun
 };
 
 app.use(cors(corsOptions));
-// Preflight OPTIONS so'rovlari uchun ham xuddi shu opsiyalar
-app.options("*", cors(corsOptions));
+
+// Preflight OPTIONS so'rovlari uchun maxsus handler
+app.options("*", (req, res) => {
+  console.log("🔄 OPTIONS preflight request for:", req.path, "from:", req.get('Origin'));
+  res.header('Access-Control-Allow-Origin', req.get('Origin') || '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,PATCH');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cache-Control, X-Requested-With, Accept, Origin');
+  res.header('Access-Control-Allow-Credentials', true);
+  res.sendStatus(200);
+});
+
+// Barcha response'larga CORS headerlarini qo'shish
+app.use((req, res, next) => {
+  const origin = req.get('Origin');
+  if (origin && (allowedOrigins === true || allowedOrigins.includes(origin))) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,PATCH');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cache-Control, X-Requested-With, Accept, Origin');
+  next();
+});
 
 /* ========= Body parser ========= */
 app.use(express.json({ limit: "1mb" }));
