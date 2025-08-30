@@ -69,9 +69,11 @@ app.get("/api/health", (_req, res) => {
 });
 
 /* ========= API Routes ========= */
+console.log("📝 Registering routes...");
 app.use("/api/children", childrenRoutes);
 app.use("/api", historyRoutes);
 app.use("/api/jetons", jetonRoutes);
+console.log("✅ Routes registered: /api/children, /api/history, /api/jetons");
 
 /* ========= API 404 handler ========= */
 app.use("/api", (_req, res) => {
