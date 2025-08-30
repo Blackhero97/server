@@ -3,6 +3,8 @@ import Jeton from "../models/Jeton.js";
 
 const router = express.Router();
 
+// Jeton management API routes
+
 // Barcha jetonlarni olish
 router.get("/", async (req, res) => {
   try {
