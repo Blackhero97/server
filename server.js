@@ -62,10 +62,10 @@ app.use(express.json({ limit: "1mb" }));
 
 /* ========= Health check ========= */
 app.get("/api", (_req, res) => {
-  res.send("Kids CRM Backend ishlayapti 🚀");
+  res.send("Kids CRM Backend v2.0 ishlayapti 🚀");
 });
 app.get("/api/health", (_req, res) => {
-  res.json({ ok: true, now: new Date().toISOString(), version: "1.0.1" });
+  res.json({ ok: true, now: new Date().toISOString(), version: "2.0.0" });
 });
 
 /* ========= API Routes ========= */
