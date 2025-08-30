@@ -20,7 +20,25 @@ const jetonSchema = new mongoose.Schema(
           "Jeton kodi noto'g'ri formatda. JET-xxxxxxxx-xxx yoki 6-20 ta harf/raqam bo'lishi kerak",
       },
     }, // Jeton kodi
-    name: { type: String, trim: true }, // Jeton nomi (Jeton 1, Jeton 2, ...)
+    name: { type: String, required: true, trim: true }, // Jeton nomi (Jeton 1, Jeton 2, ...)
+    // Tarif tizimi
+    tariff: {
+      type: String,
+      enum: ["standard", "vip"],
+      default: "standard",
+    }, // standard: 1 soat 30 ming, vip: cheklanmagan 50 ming
+    price: {
+      type: Number,
+      default: 30000, // standard tarif narxi
+    }, // Asosiy narx
+    duration: {
+      type: Number,
+      default: 60, // daqiqa (1 soat), vip uchun 0 = cheklanmagan
+    }, // Vaqt limiti
+    overtimePrice: {
+      type: Number,
+      default: 500, // 10 daqiqaga 5000, ya'ni 1 daqiqaga 500 so'm
+    }, // Qo'shimcha vaqt narxi (daqiqasiga)
     child_name: { type: String, trim: true }, // Bola ismi (optional, backward compatibility)
     parent_phone: { type: String, trim: true }, // Ota-ona telefon raqami (optional)
     isActive: { type: Boolean, default: true }, // Faol/nofaol holati

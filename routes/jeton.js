@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
 // Yangi jeton qo'shish
 router.post("/", async (req, res) => {
   try {
-    const { code, name, child_name, parent_phone, isActive } = req.body;
+    const { code, name, tariff, price, duration, overtimePrice, child_name, parent_phone, isActive } = req.body;
 
     // Jeton kodi mavjudligini tekshirish
     const existingJeton = await Jeton.findOne({ code });
@@ -29,14 +29,30 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "Bu jeton kodi allaqachon mavjud" });
     }
 
-    const jeton = new Jeton({
+    // Tarif bo'yicha default qiymatlar
+    let jetonData = {
       code,
       name,
       child_name,
       parent_phone,
       isActive: isActive !== undefined ? isActive : true,
-    });
+    };
 
+    // Tarif tizimi
+    if (tariff === "vip") {
+      jetonData.tariff = "vip";
+      jetonData.price = price || 50000;
+      jetonData.duration = 0; // Cheklanmagan
+      jetonData.overtimePrice = 0; // VIP uchun qo'shimcha to'lov yo'q
+    } else {
+      // Standard tarif
+      jetonData.tariff = "standard";
+      jetonData.price = price || 30000;
+      jetonData.duration = duration || 60; // 1 soat
+      jetonData.overtimePrice = overtimePrice || 500; // 1 daqiqaga 500 so'm (10 daqiqaga 5000)
+    }
+
+    const jeton = new Jeton(jetonData);
     await jeton.save();
     res.json(jeton);
   } catch (err) {
