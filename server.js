@@ -109,6 +109,8 @@ const MONGO_URL =
 
 const PORT = Number(process.env.PORT) || 5000;
 
+console.log("🔍 MONGO_URL:", MONGO_URL.includes('@') ? 'MongoDB Atlas' : MONGO_URL);
+
 mongoose
   .connect(MONGO_URL)
   .then(() => {
