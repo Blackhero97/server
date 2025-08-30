@@ -23,6 +23,8 @@ router.post("/", async (req, res) => {
   try {
     const { code, name, tariff, price, duration, overtimePrice, child_name, parent_phone, isActive } = req.body;
 
+    console.log("🆕 Yangi jeton qo'shish:", { code, name, tariff, price });
+
     // Jeton kodi mavjudligini tekshirish
     const existingJeton = await Jeton.findOne({ code });
     if (existingJeton) {
@@ -32,7 +34,7 @@ router.post("/", async (req, res) => {
     // Tarif bo'yicha default qiymatlar
     let jetonData = {
       code,
-      name,
+      name: name && name.trim() ? name.trim() : `Jeton ${code.slice(-4)}`, // Avtomatik nom
       child_name,
       parent_phone,
       isActive: isActive !== undefined ? isActive : true,
