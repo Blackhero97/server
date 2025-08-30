@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
 // Yangi jeton qo'shish
 router.post("/", async (req, res) => {
   try {
-    const { code, child_name, parent_phone, isActive } = req.body;
+    const { code, name, child_name, parent_phone, isActive } = req.body;
 
     // Jeton kodi mavjudligini tekshirish
     const existingJeton = await Jeton.findOne({ code });
@@ -31,6 +31,7 @@ router.post("/", async (req, res) => {
 
     const jeton = new Jeton({
       code,
+      name,
       child_name,
       parent_phone,
       isActive: isActive !== undefined ? isActive : true,
