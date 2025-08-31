@@ -47,7 +47,7 @@ const corsOptions = {
       callback(null, true);
     } else {
       console.log("❌ CORS blocked for origin:", origin);
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true,
@@ -56,39 +56,56 @@ const corsOptions = {
     "Content-Type",
     "Authorization",
     "Cache-Control",
-    "cache-control", 
+    "cache-control",
     "Pragma",
     "Expires",
     "X-Requested-With",
     "Accept",
     "Origin",
     "User-Agent",
-    "Referer"
+    "Referer",
   ],
-  optionsSuccessStatus: 200 // IE11 uchun
+  optionsSuccessStatus: 200, // IE11 uchun
 };
 
 app.use(cors(corsOptions));
 
 // Preflight OPTIONS so'rovlari uchun maxsus handler
 app.options("*", (req, res) => {
-  console.log("🔄 OPTIONS preflight request for:", req.path, "from:", req.get('Origin'));
-  res.header('Access-Control-Allow-Origin', req.get('Origin') || '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,PATCH');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cache-Control, X-Requested-With, Accept, Origin');
-  res.header('Access-Control-Allow-Credentials', true);
+  console.log(
+    "🔄 OPTIONS preflight request for:",
+    req.path,
+    "from:",
+    req.get("Origin")
+  );
+  res.header("Access-Control-Allow-Origin", req.get("Origin") || "*");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,PUT,POST,DELETE,OPTIONS,PATCH"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, Cache-Control, X-Requested-With, Accept, Origin"
+  );
+  res.header("Access-Control-Allow-Credentials", true);
   res.sendStatus(200);
 });
 
 // Barcha response'larga CORS headerlarini qo'shish
 app.use((req, res, next) => {
-  const origin = req.get('Origin');
+  const origin = req.get("Origin");
   if (origin && (allowedOrigins === true || allowedOrigins.includes(origin))) {
-    res.header('Access-Control-Allow-Origin', origin);
+    res.header("Access-Control-Allow-Origin", origin);
   }
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,PATCH');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cache-Control, X-Requested-With, Accept, Origin');
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,PUT,POST,DELETE,OPTIONS,PATCH"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, Cache-Control, X-Requested-With, Accept, Origin"
+  );
   next();
 });
 
@@ -109,7 +126,9 @@ app.use("/api/children", childrenRoutes);
 app.use("/api", historyRoutes);
 app.use("/api/jetons", jetonRoutes);
 app.use("/api/system", systemRoutes);
-console.log("✅ Routes registered: /api/children, /api/history, /api/jetons, /api/system");
+console.log(
+  "✅ Routes registered: /api/children, /api/history, /api/jetons, /api/system"
+);
 
 /* ========= API 404 handler ========= */
 app.use("/api", (_req, res) => {

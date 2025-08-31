@@ -207,15 +207,15 @@ export const scanByToken = async (req, res) => {
     const { token } = req.params;
 
     // Jeton ma'lumotlarini olish
-    const jeton = await Jeton.findOne({ 
+    const jeton = await Jeton.findOne({
       $or: [{ code: token }, { code: token.toUpperCase() }],
-      isActive: true 
+      isActive: true,
     });
 
     if (!jeton) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         error: "Jeton topilmadi yoki nofaol",
-        token 
+        token,
       });
     }
 
@@ -286,11 +286,11 @@ export const scanByToken = async (req, res) => {
 
     // 2) KIRISH - jeton tarifi bo'yicha
     const entry_time = new Date();
-    
+
     // Jeton tarifi bo'yicha vaqt va narxni belgilash
     let paid_until, base_amount;
-    
-    if (jeton.tariff === 'vip') {
+
+    if (jeton.tariff === "vip") {
       // VIP jeton: cheksiz vaqt
       paid_until = new Date(entry_time.getTime() + 24 * 60 * 60 * 1000); // 24 soat
       base_amount = roundAmount(jeton.price || 50000);

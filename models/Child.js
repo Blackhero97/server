@@ -14,7 +14,7 @@ const childSchema = new mongoose.Schema(
 
     // 🆕 chek uchun: kirishda qo'llangan bazaviy narxni saqlaymiz
     base_amount: { type: Number, default: 0 },
-    
+
     // 🆕 Jeton ma'lumotlari
     jeton_name: { type: String, trim: true },
     jeton_tariff: { type: String, enum: ["standard", "vip"] },

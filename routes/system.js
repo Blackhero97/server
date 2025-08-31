@@ -22,7 +22,9 @@ router.get("/stats", async (req, res) => {
     });
   } catch (err) {
     console.error("Statistikani olishda xatolik:", err);
-    res.status(500).json({ error: "Statistikani olishda xatolik: " + err.message });
+    res
+      .status(500)
+      .json({ error: "Statistikani olishda xatolik: " + err.message });
   }
 });
 
@@ -40,7 +42,9 @@ router.delete("/clear-all", async (req, res) => {
     });
   } catch (err) {
     console.error("Ma'lumotlarni o'chirishda xatolik:", err);
-    res.status(500).json({ error: "Ma'lumotlarni o'chirishda xatolik: " + err.message });
+    res
+      .status(500)
+      .json({ error: "Ma'lumotlarni o'chirishda xatolik: " + err.message });
   }
 });
 
@@ -56,7 +60,9 @@ router.delete("/clear-children", async (req, res) => {
     });
   } catch (err) {
     console.error("Children o'chirishda xatolik:", err);
-    res.status(500).json({ error: "Children o'chirishda xatolik: " + err.message });
+    res
+      .status(500)
+      .json({ error: "Children o'chirishda xatolik: " + err.message });
   }
 });
 
@@ -72,7 +78,9 @@ router.delete("/clear-history", async (req, res) => {
     });
   } catch (err) {
     console.error("History o'chirishda xatolik:", err);
-    res.status(500).json({ error: "History o'chirishda xatolik: " + err.message });
+    res
+      .status(500)
+      .json({ error: "History o'chirishda xatolik: " + err.message });
   }
 });
 
@@ -88,7 +96,9 @@ router.delete("/clear-jetons", async (req, res) => {
     });
   } catch (err) {
     console.error("Jetonlarni o'chirishda xatolik:", err);
-    res.status(500).json({ error: "Jetonlarni o'chirishda xatolik: " + err.message });
+    res
+      .status(500)
+      .json({ error: "Jetonlarni o'chirishda xatolik: " + err.message });
   }
 });
 

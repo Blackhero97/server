@@ -21,7 +21,17 @@ router.get("/", async (req, res) => {
 // Yangi jeton qo'shish
 router.post("/", async (req, res) => {
   try {
-    const { code, name, tariff, price, duration, overtimePrice, child_name, parent_phone, isActive } = req.body;
+    const {
+      code,
+      name,
+      tariff,
+      price,
+      duration,
+      overtimePrice,
+      child_name,
+      parent_phone,
+      isActive,
+    } = req.body;
 
     console.log("🆕 Yangi jeton qo'shish:", { code, name, tariff, price });
 
