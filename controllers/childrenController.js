@@ -6,8 +6,38 @@ import { v4 as uuidv4 } from "uuid";
 import { printReceiptOS } from "../services/osPrinter.js"; // ⬅️ OS spool orqali chop etish
 
 // ====== Konfiguratsiya (ENV) ======
-const BASE_COST = Number(process.env.BASE_COST) || 50000; // 1 soat narxi
-const PER_MINUTE_COST = BASE_COST / 60; // minut narxi
+const BASE_COST = Number(process.env.BASE_COST) || 50000; // 1 soat narx};
+
+// 🗑️ Bitta sessiyani o'chirish
+export const deleteChild = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Child.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return res.status(404).json({ error: "Sessiya topilmadi" });
+    }
+
+    res.json({
+      ok: true,
+      message: "Sessiya muvaffaqiyatli o'chirildi",
+      deleted: deleted,
+    });
+  } catch (e) {
+    console.error("Sessiyani o'chirishda xatolik:", e);
+    res.status(500).json({ error: "Server xatosi: " + e.message });
+  }
+};
+
+export const deleteAllChildren = async (req, res) => {
+  try {
+    await Child.deleteMany({});
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: "O'chirishda xatolik" });
+  }
+};
+ER_MINUTE_COST = BASE_COST / 60; // minut narxi
 const ROUND_TO = Number(process.env.ROUND_TO ?? 100); // 0 => integer
 const ROUND_STRATEGY = (process.env.ROUND_STRATEGY || "ceil").toLowerCase();
 

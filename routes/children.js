@@ -1,6 +1,12 @@
 // routes/children.js
-import express from "express";
-import {
+import express from "express// Chekni qayta chop etish
+router.post("/:id/reprint", reprintReceipt);
+
+// Bitta sessiyani o'chirish
+router.delete("/:id", deleteChild);
+
+// Barcha sessiyalarni o'chirish (admin/test uchun)
+router.delete("/clear", deleteAllChildren);mport {
   getChildren,
   getChildByQr,
   getChildByCode,
@@ -9,6 +15,7 @@ import {
   scanByToken,
   getHistoryByToken,
   reprintReceipt,
+  deleteChild,
   deleteAllChildren,
 } from "../controllers/childrenController.js";
 
