@@ -61,17 +61,26 @@ const computeCheckout = (
   entry_time,
   paid_until_or_null,
   paid_amount_or_null,
-  exit_time = new Date()
+  exit_time = new Date(),
+  jetonTariff = null // VIP yoki standard
 ) => {
   const paid_until = paid_until_or_null || entry_time;
   let paid_amount = paid_amount_or_null || roundAmount(BASE_COST);
 
-  if (exit_time > paid_until) {
-    const extraMs = exit_time.getTime() - paid_until.getTime();
-    const extraMin = Math.ceil(extraMs / (1000 * 60)); // yuqoriga
-    paid_amount += extraMin * PER_MINUTE_COST;
+  // VIP jetonlar uchun qo'shimcha to'lov yo'q
+  if (jetonTariff === "vip") {
+    // VIP jetonlar uchun vaqt hisoblanmaydi
+    paid_amount = roundAmount(paid_amount); // faqat bazaviy to'lov
+  } else {
+    // Standard jetonlar uchun vaqt hisobi
+    if (exit_time > paid_until) {
+      const extraMs = exit_time.getTime() - paid_until.getTime();
+      const extraMin = Math.ceil(extraMs / (1000 * 60)); // yuqoriga
+      paid_amount += extraMin * PER_MINUTE_COST;
+    }
+    paid_amount = roundAmount(paid_amount);
   }
-  paid_amount = roundAmount(paid_amount);
+
   return { exit_time, paid_until, paid_amount };
 };
 
@@ -138,7 +147,8 @@ export const checkoutChild = async (req, res) => {
       child.entry_time,
       paid_until,
       child.paid_amount,
-      new Date()
+      new Date(),
+      child.jeton_tariff // Jeton tarifi uzatilmoqda
     );
 
     child.exit_time = result.exit_time;
@@ -231,7 +241,8 @@ export const scanByToken = async (req, res) => {
         active.entry_time,
         active.paid_until || active.entry_time,
         active.paid_amount,
-        new Date()
+        new Date(),
+        jeton.tariff // Jeton tarifi uzatilmoqda
       );
 
       active.exit_time = result.exit_time;
