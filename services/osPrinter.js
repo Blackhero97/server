@@ -58,7 +58,9 @@ export async function printReceiptOS(receipt) {
   const outDir = path.join(__dirname, "..", "receipts");
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
-  const filename = `receipt_${receipt.sessionId ?? "unknown"}_${Date.now()}.pdf`;
+  const filename = `receipt_${
+    receipt.sessionId ?? "unknown"
+  }_${Date.now()}.pdf`;
   const filepath = path.join(outDir, filename);
 
   await new Promise((resolve, reject) => {
@@ -105,8 +107,6 @@ export async function printReceiptOS(receipt) {
       width: lineWidth / 2,
       align: "left",
       continued: true,
-
-      
     });
     doc.text(`Chiqish: ${fmtDTShort(receipt.exit_time)}`, {
       width: lineWidth / 2,
@@ -133,8 +133,14 @@ export async function printReceiptOS(receipt) {
       align: "left",
     });
 
-    doc.font("Helvetica-Bold").fontSize(h2).text("Tashrifingizdan mamnunmiz!", { align: "center" });
-    doc.font("Helvetica").fontSize(body - 1).text("Tel: +998500052727", { align: "center" });
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(h2)
+      .text("Tashrifingizdan mamnunmiz!", { align: "center" });
+    doc
+      .font("Helvetica")
+      .fontSize(body - 1)
+      .text("Tel: +998500052727", { align: "center" });
 
     doc.end();
     stream.on("finish", resolve);
