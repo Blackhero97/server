@@ -80,7 +80,15 @@ const computeCheckout = ({ child, nowDate, jetonTariff = "standard" }) => {
   }
 
   const extraMin = minutesBetween(paidUntil, exit);
-  const extraFee = roundAmount(extraMin * PER_MINUTE_COST);
+  
+  // ✨ YANGI TARIF LOGIKASI: Birinchi 10 daqiqa bepul, keyingi har daqiqa 5000 so'm
+  let extraFee = 0;
+  if (extraMin > 10) {
+    // Faqat 10 daqiqadan keyin to'lov hisoblanadi
+    const chargeableMinutes = extraMin - 10;
+    extraFee = roundAmount(chargeableMinutes * PER_MINUTE_COST);
+  }
+  // Aks holda extraFee = 0 (birinchi 10 daqiqa bepul)
 
   return {
     paid_until: paidUntil,
