@@ -80,7 +80,7 @@ const computeCheckout = ({ child, nowDate, jetonTariff = "standard" }) => {
   }
 
   const extraMin = minutesBetween(paidUntil, exit);
-  
+
   // ✨ YANGI TARIF LOGIKASI: Birinchi 10 daqiqa bepul, keyingi har daqiqa 5000 so'm
   let extraFee = 0;
   if (extraMin > 10) {

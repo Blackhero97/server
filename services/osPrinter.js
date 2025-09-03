@@ -133,7 +133,8 @@ export async function printReceiptOS(receipt) {
       align: "left",
     });
 
-    doc.font("Helvetica-Bold").fontSize(h2).text("Rahmat!", { align: "center" });
+    doc.font("Helvetica-Bold").fontSize(h2).text("Tashrifingizdan mamnunmiz!", { align: "center" });
+    doc.font("Helvetica").fontSize(body - 1).text("Tel: +998500052727", { align: "center" });
 
     doc.end();
     stream.on("finish", resolve);
